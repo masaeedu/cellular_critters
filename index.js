@@ -119,10 +119,20 @@ const Vec = (() => {
 
 // :: type Step = { leg: LazyList Vec2, transform: Transform2 }
 
+const x_axis = LL.map(x => [x, 0])(LL.range(Infinity));
+
+// :: Vec2 -> LazyListF Step Vec2
+const inwards = ([w, h]) => {
+  const leg = LL.take(w)(x_axis);
+  const transform = Fn.pipe([Vec.rotate(Math.PI / 2), Vec.add([w - 1, 1])]);
+
+  return w * h === 0 ? Nil : Cons({ leg, transform })([h - 1, w]);
+};
+
 // :: Int -> LazyListF Step Int
-const step = i => {
+const outwards = i => {
   const n = Math.floor(i / 2) + 1;
-  const leg = LL.map(x => [x, 0])(LL.range(n));
+  const leg = LL.take(n)(x_axis);
   const transform = Fn.pipe([
     // 90 deg ccw rotation
     Vec.rotate(Math.PI / 2),
@@ -139,7 +149,7 @@ const trace = LL.match({
   Cons: ({ leg, transform }) => Fn.pipe([LL.map(transform), LL.append(leg)])
 });
 
-const result = hylo(LL.Base)(trace)(step)(0);
+const result = hylo(LL.Base)(trace)(inwards)([20, 20]);
 
 // ## TEST ##
 const origin = [process.stdout.columns / 2, process.stdout.rows / 2];
