@@ -23,9 +23,19 @@ const langton = (() => {
 
 // ## RENDERING ##
 const canvas = new Canvas();
+// :: Cont! ()
+const writeBlock = color => pos => cb => {
+  canvas
+    .moveTo(...pos)
+    .background(color)
+    .write(" ")
+    .flush();
+  cb();
+};
 
 const toKey = ([x, y]) => `${x},${y}`;
-const transition = ({ grid, pos, θ }) => a => {
+
+const step = ({ grid, pos, θ }) => a => {
   const k = toKey(pos);
   const c = grid.has(k);
 
@@ -44,25 +54,15 @@ const transition = ({ grid, pos, θ }) => a => {
   const θ_ = θ + φ;
   const pos_ = Vec.add(pos)(Vec.rotate(θ_)([0, 1]));
 
-  return cb => {
-    canvas
-      .moveTo(...pos)
-      .background(c ? "black" : "white")
-      .write(" ")
-      .flush();
-    canvas
-      .moveTo(...pos_)
-      .background("red")
-      .write(" ")
-      .flush();
-
-    setTimeout(() => cb({ grid: grid_, pos: pos_, θ: θ_ }), 5);
-  };
+  const color = c ? "black" : "white";
+  const draw = Cont["*>"](writeBlock(color)(pos))(writeBlock("red")(pos_));
+  return Cont["<$"]({ grid: grid_, pos: pos_, θ: θ_ })(draw);
 };
+const waitAndStep = s => a => Cont["*>"](Cont_.delay_(5))(step(s)(a));
 
 const grid = new Set();
 const pos = [process.stdout.columns / 2, process.stdout.rows / 2];
-const θ = R;
-const main = LL.foldM(Cont)(transition)({ grid, pos, θ })(langton);
+const θ = L;
+const main = LL.foldM(Cont)(waitAndStep)({ grid, pos, θ })(langton);
 
 Cont_.runCont(main);
