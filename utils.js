@@ -103,7 +103,7 @@ const LazyList = (() => {
       Cons: x => xs => Cons(x)(append(xs)(ys))
     })(xs);
 
-  // :: Monad m -> (a -> b -> m a) -> m a -> LazyList b -> m a
+  // :: Monad m -> (a -> b -> m a) -> a -> LazyList b -> m a
   const foldM = M => f => z =>
     Fn.pipe([
       Lazy.force,
