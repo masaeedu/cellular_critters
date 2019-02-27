@@ -61,7 +61,7 @@ const step = colors => ({ grid, pos, θ }) => a => {
 
   // The effect we're going to perform
   const draw = Arr.sequence(Cont)([
-    Cont_.delay_(5),
+    Cont_.delay_(0),
     writeBlock(colors[i_])(pos)
   ]);
 
@@ -75,6 +75,11 @@ const s0 = { grid, pos, θ };
 
 const simulate = ant => colors => LL.foldM(Cont)(step(colors))(s0)(ant);
 
-const main = simulate(ant([L, L, R, R]))(["black", "purple", "green", "red"]);
+const main = simulate(ant([L, L, R, R]))([
+  "#FF00FF",
+  "#00FF00",
+  "#8B008B",
+  "black"
+]);
 
 Cont_.runCont(main);
