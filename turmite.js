@@ -7,7 +7,7 @@ const { Nil, Cons } = LL;
 
 // ## LOGIC ##
 // :: type Move a = State a Angle
-// :: type Turmite a = [Move a]
+// :: type Turmite a = LazyList (Move a)
 
 // :: [Angle, Angle, Angle, Angle]
 const Direction = Arr.map(i => (i * Math.PI) / 2)(Arr.range(4));
