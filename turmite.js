@@ -13,13 +13,20 @@ const { Nil, Cons } = LL;
 const Direction = Arr.map(i => (i * Math.PI) / 2)(Arr.range(4));
 const [U, L, D, R] = Direction;
 
-// :: Turmite Boolean
-const langton = (() => {
-  const step = State[">>="](State.get)(b =>
-    State["<$"](b ? L : R)(State.put(!b))
+// :: Vector n Direction -> Turmite (LessThan n)
+const ant = d => {
+  const l = d.length;
+  const move = State[">>="](State.get)(i =>
+    State["<$"](d[i])(State.put((i + 1) % l))
   );
-  return LL.repeat(step);
-})();
+  return LL.repeat(move);
+};
+
+// :: Turmite (LessThan 2)
+const langton = ant([L, R]);
+
+// :: Turmite (LessThan 3)
+const rlr = ant([R, L, R]);
 
 // ## RENDERING ##
 const canvas = new Canvas();
@@ -30,39 +37,44 @@ const writeBlock = color => pos => cb => {
     .background(color)
     .write(" ")
     .flush();
-  cb();
+  cb(undefined);
 };
 
 const toKey = ([x, y]) => `${x},${y}`;
 
-const step = ({ grid, pos, θ }) => a => {
+const step = colors => ({ grid, pos, θ }) => a => {
   const k = toKey(pos);
-  const c = grid.has(k);
+  const i = grid[k] || 0;
 
   // Evaluate the turmite's state transition
-  const [φ, c_] = a(c);
+  const [φ, i_] = a(i);
 
   // Update the grid with any changes the turmite made
-  const grid_ = new Set(grid);
-  if (c_) {
-    grid_.add(k);
-  } else {
-    grid_.delete(k);
-  }
+  const grid_ = { ...grid, [k]: i_ };
 
   // Compute the new orientation and position
   const θ_ = θ + φ;
   const pos_ = Vec.add(pos)(Vec.rotate(θ_)([0, 1]));
 
-  const color = c ? "black" : "white";
-  const draw = Cont["*>"](writeBlock(color)(pos))(writeBlock("red")(pos_));
-  return Cont["<$"]({ grid: grid_, pos: pos_, θ: θ_ })(draw);
-};
-const waitAndStep = s => a => Cont["*>"](Cont_.delay_(5))(step(s)(a));
+  // Updated state
+  const s = { grid: grid_, pos: pos_, θ: θ_ };
 
-const grid = new Set();
+  // The effect we're going to perform
+  const draw = Arr.sequence(Cont)([
+    Cont_.delay_(5),
+    writeBlock(colors[i_])(pos)
+  ]);
+
+  return Cont["<$"](s)(draw);
+};
+
+const grid = new Map();
 const pos = [process.stdout.columns / 2, process.stdout.rows / 2];
 const θ = L;
-const main = LL.foldM(Cont)(waitAndStep)({ grid, pos, θ })(langton);
+const s0 = { grid, pos, θ };
+
+const simulate = ant => colors => LL.foldM(Cont)(step(colors))(s0)(ant);
+
+const main = simulate(ant([L, L, R, R]))(["black", "purple", "green", "red"]);
 
 Cont_.runCont(main);
