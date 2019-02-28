@@ -3,7 +3,6 @@ const { Arr, Cont, State, ana } = require("@masaeedu/fp");
 const { match, adt } = require("@masaeedu/adt");
 
 const { LazyList: LL, Vec, Signal, Cont_ } = require("./utils");
-const { Nil, Cons } = LL;
 
 // ## LOGIC ##
 // :: type Move a = State a Angle
