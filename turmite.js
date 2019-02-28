@@ -75,10 +75,8 @@ const recipes = {
   key: [L, L, R, R, R, L, R, L, R, L, L, R],
   squarefill: [L, R, R, R, R, R, L, L, R]
 };
-const recipe = recipes.langton;
-const colors = Arr.range(recipe.length).map(
-  Signal.rainbow(Math.PI / recipe.length)
-);
+const recipe = recipes.spaceship;
+const colors = Arr.range(recipe.length).map(Signal.rainbow(0.5));
 const main = simulate(ant(recipe))(colors);
 
 Cont_.runCont(main);
