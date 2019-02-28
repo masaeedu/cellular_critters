@@ -53,17 +53,14 @@ const step = colors => ({ grid, pos, θ }) => a => {
   const s = { grid: grid_, pos: pos_, θ: θ_ };
 
   // The effect we're going to perform
-  const draw = Arr.sequence(Cont)([
-    cb => setImmediate(cb),
-    writeBlock(colors[i_])(pos)
-  ]);
+  const draw = Arr.sequence(Cont)([setImmediate, writeBlock(colors[i_])(pos)]);
 
   return Cont["<$"](s)(draw);
 };
 
 const grid = new Map();
 const pos = [process.stdout.columns / 2, process.stdout.rows / 2];
-const θ = L;
+const θ = D;
 const s0 = { grid, pos, θ };
 
 const simulate = ant => colors => LL.foldM(Cont)(step(colors))(s0)(ant);
@@ -75,7 +72,7 @@ const recipes = {
   key: [L, L, R, R, R, L, R, L, R, L, L, R],
   squarefill: [L, R, R, R, R, R, L, L, R]
 };
-const recipe = recipes.spaceship;
+const recipe = recipes.key;
 const colors = Arr.range(recipe.length).map(Signal.rainbow(0.5));
 const main = simulate(ant(recipe))(colors);
 
