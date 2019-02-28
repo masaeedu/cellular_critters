@@ -9,3 +9,6 @@ Run `yarn && node turmite.js` in a true-color compatible terminal (check [here](
 
 ### Raygun
 ![raygun](./captures/raygun.gif)
+
+### Key
+![key](./captures/key.gif)
