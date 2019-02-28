@@ -2,7 +2,7 @@ const Canvas = require("terminal-canvas");
 const { Arr, Cont, State, ana } = require("@masaeedu/fp");
 const { match, adt } = require("@masaeedu/adt");
 
-const { LazyList: LL, Vec, Cont_ } = require("./utils");
+const { LazyList: LL, Vec, Signal, Cont_ } = require("./utils");
 const { Nil, Cons } = LL;
 
 // ## LOGIC ##
@@ -75,11 +75,14 @@ const s0 = { grid, pos, θ };
 
 const simulate = ant => colors => LL.foldM(Cont)(step(colors))(s0)(ant);
 
-const main = simulate(ant([L, L, R, R]))([
-  "#FF00FF",
-  "#00FF00",
-  "#8B008B",
-  "black"
-]);
+const recipes = {
+  spaceship: [L, L, R, R],
+  raycannon: [R, R, L, L, L, R, L, L, L, R, R, R],
+  key: [L, L, R, R, R, L, R, L, R, L, L, R],
+  squarefill: [L, R, R, R, R, R, L, L, R]
+};
+const recipe = recipes.squarefill;
+const colors = Arr.range(recipe.length).map(Signal.rainbow(0.3));
+const main = simulate(ant(recipe))(colors);
 
 Cont_.runCont(main);
