@@ -22,12 +22,6 @@ const ant = d => {
   return LL.repeat(move);
 };
 
-// :: Turmite (LessThan 2)
-const langton = ant([L, R]);
-
-// :: Turmite (LessThan 3)
-const rlr = ant([R, L, R]);
-
 // ## RENDERING ##
 const canvas = new Canvas();
 // :: Cont! ()
@@ -76,13 +70,16 @@ const s0 = { grid, pos, θ };
 const simulate = ant => colors => LL.foldM(Cont)(step(colors))(s0)(ant);
 
 const recipes = {
+  langton: [R, L],
   spaceship: [L, L, R, R],
   raycannon: [R, R, L, L, L, R, L, L, L, R, R, R],
   key: [L, L, R, R, R, L, R, L, R, L, L, R],
   squarefill: [L, R, R, R, R, R, L, L, R]
 };
-const recipe = recipes.squarefill;
-const colors = Arr.range(recipe.length).map(Signal.rainbow(0.3));
+const recipe = recipes.langton;
+const colors = Arr.range(recipe.length).map(
+  Signal.rainbow(Math.PI / recipe.length)
+);
 const main = simulate(ant(recipe))(colors);
 
 Cont_.runCont(main);
