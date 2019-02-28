@@ -54,7 +54,7 @@ const step = colors => ({ grid, pos, θ }) => a => {
 
   // The effect we're going to perform
   const draw = Arr.sequence(Cont)([
-    Cont_.delay_(0),
+    cb => setImmediate(cb),
     writeBlock(colors[i_])(pos)
   ]);
 
