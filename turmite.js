@@ -70,7 +70,7 @@ const recipes = {
   spaceship: [L, L, R, R],
   raycannon: [R, R, L, L, L, R, L, L, L, R, R, R],
   key: [L, L, R, R, R, L, R, L, R, L, L, R],
-  squarefill: [L, R, R, R, R, R, L, L, R]
+  amber: [L, R, R, R, R, R, L, L, R]
 };
 const recipe = recipes.key;
 const colors = Arr.range(recipe.length).map(Signal.rainbow(0.5));

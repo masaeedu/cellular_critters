@@ -12,3 +12,6 @@ Run `yarn && node turmite.js` in a true-color compatible terminal (check [here](
 
 ### Key
 ![key](./captures/key.gif)
+
+### Amber
+![amber](./captures/amber.gif)
