@@ -58,7 +58,7 @@ const step = colors => ({ grid, pos, θ }) => a => {
   return Cont["<$"](s)(draw);
 };
 
-const grid = new Map();
+const grid = {};
 const pos = [process.stdout.columns / 2, process.stdout.rows / 2];
 const θ = D;
 const s0 = { grid, pos, θ };
